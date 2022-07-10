@@ -1,25 +1,25 @@
 #include <Arduino.h>
 
-int botaoIniciar = 0;
-int botaoNivelAguaAlto = 1;
-int botaoNivelAguaMedio = 2;
-int botaoTempo10Min = 3;
-int botaoTempo5Min = 4;
-int sensorAguaMedio = 5;
-int sensorAguaAlto = 6;
-int LED5min = 7;
-int LED10min = 8;
-int LEDAguaMedio = 9;
-int LEDAguaAlto = 10;
-int botaoLIGARMAQUINA = 11; // ligar maquina manualmente para limpeza.
-int LEDValvulaOFF = 12;
-int LEDStandBy = 13;
-int LEDValvulaON = 14;
-int LEDEnergizado = 15;
-int LEDMotorDesligado = 16;
-int LEDMotorLigado = 17;
-int Solenoide = 18;
-int Motor = 19;
+int LEDMotorLigado = 2;
+int LEDValvulaOFF = 3;
+int LEDMotorDesligado = 4;
+int botaoNivelAguaMedio = 5;
+int LEDValvulaON = 6;
+int LEDStandBy = 8;
+int LEDAguaAlto = 9;
+int LEDAguaMedio = 10;
+int LED10min = 11;
+int LED5min =12;
+int LEDEnergizado = 13;
+int botaoTempo10Min = 14;
+int botaoLIGARMAQUINA = 15; // ligar maquina manualmente para limpeza.
+int botaoTempo5Min = 16;
+int botaoIniciar = 17;
+int botaoNivelAguaAlto = 18;
+int sensorAguaMedio = 19;
+int sensorAguaAlto = 7;
+int Motor = 20;
+int Solenoide = 21;
 
 void setup()
 {
@@ -45,19 +45,16 @@ void setup()
   pinMode(sensorAguaMedio, INPUT);
 }
 
-void ligarMotor()
+void ligarMotor ()
 {
 
-  int tempoMotorLigado;
+int tempoMotorLigado;
 
-  if (botaoTempo10Min != HIGH && botaoTempo5Min != LOW)
-  {
-    tempoMotorLigado = 5000;
-  }
-  else if (botaoTempo10Min != LOW && botaoTempo5Min != HIGH)
-  {
-    tempoMotorLigado = 10000;
-  }
+if(botaoTempo10Min== HIGH && botaoTempo5Min == LOW){
+  tempoMotorLigado = 10000;
+} else if(botaoTempo10Min==LOW && botaoTempo5Min==HIGH){
+  tempoMotorLigado =5000;
+}
 
   digitalWrite(LEDMotorDesligado, LOW);
   digitalWrite(Motor, HIGH);
@@ -73,14 +70,11 @@ void encherTanque()
 
   int nivelAgua;
 
-  if (botaoNivelAguaMedio == HIGH && botaoNivelAguaAlto == LOW)
-  {
-    nivelAgua = sensorAguaMedio;
-  }
-  else if (botaoNivelAguaMedio == LOW && botaoNivelAguaAlto == HIGH)
-  {
-    nivelAgua = sensorAguaAlto;
-  }
+if(botaoNivelAguaMedio== HIGH && botaoNivelAguaAlto == LOW){
+  nivelAgua = sensorAguaMedio;
+} else if(botaoNivelAguaMedio== LOW && botaoNivelAguaAlto == HIGH){
+  nivelAgua = sensorAguaAlto;
+}
 
   while (nivelAgua != LOW)
   {
@@ -93,9 +87,10 @@ void encherTanque()
   digitalWrite(LEDValvulaON, LOW);
 }
 
+
 void loop()
 {
-  // Maquina em StandBY
+// Maquina em StandBY
   digitalWrite(LEDEnergizado, HIGH);
   digitalWrite(LEDMotorDesligado, HIGH);
   digitalWrite(LEDValvulaOFF, HIGH);
@@ -104,27 +99,13 @@ void loop()
   digitalWrite(LEDStandBy, LOW);
   delay(250);
 
-  // Ligar Maquina Manualmente
-  {
-    int estadoMaquina = digitalRead(botaoLIGARMAQUINA);
-    while (estadoMaquina != LOW && Motor != HIGH && Solenoide != HIGH)
-    {
+// inicializar máquina
+  int estadoBotaoIniciar = digitalRead(botaoIniciar);
 
-      digitalWrite(Motor, HIGH);
-      digitalWrite(LEDMotorDesligado, LOW);
-      digitalWrite(LEDMotorLigado, HIGH);
-      estadoMaquina = estadoMaquina;
-    }
-  }
-  // inicializar máquina
+  if (estadoBotaoIniciar != LOW)
   {
-    int estadoBotaoIniciar = digitalRead(botaoIniciar);
-
-    if (estadoBotaoIniciar != LOW)
-    {
-      encherTanque();
-      delay(1000);
-      ligarMotor();
-    }
+    encherTanque();
+    delay(1000);
+    ligarMotor();
   }
 }
